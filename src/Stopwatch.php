@@ -6,7 +6,12 @@ use Closure;
 
 class Stopwatch
 {
-
+    /**
+     * Times the execution of a closure containing the code needed to be timed
+     *
+     * @param Closure $closure
+     * @return StopwatchMeasurement
+     */
     public static function time(Closure $closure)
     {
         $startTime = microtime(true);
