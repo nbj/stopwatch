@@ -1,0 +1,31 @@
+{
+    "name": "nbj/stopwatch",
+    "description": "Library for measuring how long code takes to execute",
+    "authors": [
+        {
+            "name": "Nikolaj Boel Jensen",
+            "email": "nbj@cego.dk"
+        }
+    ],
+    "type": "library",
+    "license": "MIT",
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "require": {
+        "nesbot/carbon": "^2.7"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "*",
+        "friendsofphp/php-cs-fixer": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "Nbj\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    }
+}
