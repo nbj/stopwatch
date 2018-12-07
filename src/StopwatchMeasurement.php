@@ -163,7 +163,7 @@ class StopwatchMeasurement
     /**
      * Get start time as a carbon instance
      *
-     * @return Carbon|\Carbon\CarbonInterface
+     * @return Carbon
      */
     public function startTime()
     {
@@ -173,7 +173,7 @@ class StopwatchMeasurement
     /**
      * Get end time as a carbon instance
      *
-     * @return Carbon|\Carbon\CarbonInterface
+     * @return Carbon
      */
     public function endTime()
     {
