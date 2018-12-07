@@ -12,7 +12,7 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "require": {
-        "nesbot/carbon": "^2.7"
+        "nesbot/carbon": "^1.26.3"
     },
     "require-dev": {
         "phpunit/phpunit": "*",
