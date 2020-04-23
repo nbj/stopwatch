@@ -2,8 +2,10 @@
 
 namespace Tests;
 
+use Exception;
 use Carbon\Carbon;
 use Nbj\Stopwatch;
+use RuntimeException;
 use Nbj\StopwatchMeasurement;
 use PHPUnit\Framework\TestCase;
 
@@ -16,6 +18,25 @@ class TheStopwatchCanMeasureExecutionTimeTest extends TestCase
         $measurement = Stopwatch::time(function () {
             time_nanosleep(0, 100000000);
         });
+
+        // As any sleep function promises to sleep for at least the given time, it
+        // cannot promise when it will be scheduled cpu time again afterwards. So
+        // we must take this into account, and give our tests some leeway (5ms)
+        $this->assertEquals(0, $measurement->seconds());
+
+        $this->assertGreaterThanOrEqual(100, $measurement->milliseconds());
+        $this->assertLessThanOrEqual(105, $measurement->milliseconds());
+
+        $this->assertGreaterThanOrEqual(100000, $measurement->microseconds());
+        $this->assertLessThanOrEqual(105000, $measurement->microseconds());
+    }
+
+    /** @test */
+    public function it_can_measure_execution_time_in_a_none_closure_based_fashion()
+    {
+        $stopwatch = Stopwatch::create()->start();
+        time_nanosleep(0, 100000000);
+        $measurement = $stopwatch->stop()->getMeasurement();
 
         // As any sleep function promises to sleep for at least the given time, it
         // cannot promise when it will be scheduled cpu time again afterwards. So
@@ -95,5 +116,34 @@ class TheStopwatchCanMeasureExecutionTimeTest extends TestCase
 
         $this->assertTrue(is_float($measurement->rawStartTime()));
         $this->assertTrue(is_float($measurement->rawEndTime()));
+    }
+
+    /** @test */
+    public function it_takes_exception_to_being_stopped_if_never_started()
+    {
+        $stopwatch = Stopwatch::create();
+
+        try {
+            $stopwatch->stop();
+        } catch (Exception $exception) {
+            $this->assertInstanceOf(RuntimeException::class, $exception);
+            $this->assertEquals('Stopwatch has not been started yet, so it cannot be stopped', $exception->getMessage());
+        }
+    }
+
+    /** @test */
+    public function it_takes_exception_to_providing_a_measurement_if_either_start_time_or_end_time_has_not_been_set()
+    {
+        $measurement = null;
+        $stopwatch = Stopwatch::create()->start();
+
+        try {
+            $measurement = $stopwatch->getMeasurement();
+        } catch (Exception $exception) {
+            $this->assertInstanceOf(RuntimeException::class, $exception);
+            $this->assertEquals('Stopwatch has either not been started yet or stopped, so nothing can be measured', $exception->getMessage());
+        }
+
+        $this->assertNull($measurement);
     }
 }
